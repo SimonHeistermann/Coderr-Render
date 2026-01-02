@@ -1,0 +1,7 @@
+backend/env/
+backend/venv/
+backend/ENV/
+backend/.venv/
+backend/.Python
+backend/.env
+backend/.venv
