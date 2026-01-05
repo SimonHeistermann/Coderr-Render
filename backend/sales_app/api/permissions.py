@@ -114,3 +114,22 @@ class IsStaffForDeleteOrOrderPartyForReadAndBusinessOwnerForWrite(IsAuthenticate
             return obj.offer_detail.offer.user_profile_id == profile.id
 
         return False
+    
+class IsAuthenticatedForReadAndBusinessOwnerForWrite(BasePermission):
+    """
+    GET/HEAD/OPTIONS: only authenticated users (prevents 404 leak for anonymous)
+    PATCH/PUT/DELETE: only business owner of the offer
+    """
+
+    def has_permission(self, request, view):
+        return bool(request.user and request.user.is_authenticated)
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in SAFE_METHODS:
+            return True
+
+        profile = getattr(request.user, "userprofile", None)
+        if not profile:
+            return False
+
+        return profile == obj.user_profile

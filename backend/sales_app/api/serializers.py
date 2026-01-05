@@ -228,17 +228,22 @@ class OrderSerializer(StrictModelSerializer):
     def create(self, validated_data):
         request = self.context.get("request")
         user = getattr(request, "user", None)
-        customer_user = getattr(user, "userprofile", None)
-        if not customer_user:
-            raise serializers.ValidationError("User Profile does not exist.")
+        profile = getattr(user, "userprofile", None)
+
+        if not profile:
+            raise PermissionDenied("User profile not found.")
 
         offer_detail_id = validated_data.pop("offer_detail_id")
+
         try:
-            detail = OfferDetail.objects.get(id=offer_detail_id)
+            detail = OfferDetail.objects.select_related("offer").get(id=offer_detail_id)
         except OfferDetail.DoesNotExist:
             raise NotFound(detail="OfferDetail not found.")
 
-        return Order.objects.create(customer_user=customer_user, offer_detail=detail)
+        if profile.type == "business" and detail.offer.user_profile_id == profile.id:
+            raise PermissionDenied("You cannot order your own offer.")
+
+        return Order.objects.create(customer_user=profile, offer_detail=detail)
 
     def get_revisions(self, obj):
         return obj.offer_detail.revisions

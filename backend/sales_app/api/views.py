@@ -15,7 +15,7 @@ from .permissions import (
     IsStaffForDeleteOrOrderPartyForReadAndBusinessOwnerForWrite,
     IsUserWithProfile,
     PublicReadBusinessWrite,
-    IsBusinessOwnerOrReadOnly,
+    IsAuthenticatedForReadAndBusinessOwnerForWrite,
 )
 from .serializers import (
     OfferCreateSerializer,
@@ -77,7 +77,7 @@ class OfferDetailView(generics.RetrieveUpdateDestroyAPIView):
     Only the business owner can update/delete.
     """
     queryset = Offer.objects.all()
-    permission_classes = [IsBusinessOwnerOrReadOnly]
+    permission_classes = [IsAuthenticatedForReadAndBusinessOwnerForWrite]
 
     def get_serializer_class(self):
         if self.request.method in SAFE_METHODS:
@@ -184,7 +184,7 @@ class ReviewListCreateView(generics.ListCreateAPIView):
 
     def get_permissions(self):
         if self.request.method in SAFE_METHODS:
-            return [AllowAny()]
+            return [IsAuthenticated()]
         return [IsUserWithProfile()]
 
 
@@ -194,7 +194,7 @@ class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_permissions(self):
         if self.request.method in SAFE_METHODS:
-            return [AllowAny()]
+            return [IsAuthenticated()]
         return [IsReviewerSelf()]
 
 

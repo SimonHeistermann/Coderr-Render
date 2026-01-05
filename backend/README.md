@@ -67,8 +67,18 @@ cd Coderr
 ### 2️⃣ Create and Activate a Virtual Environment
 ```bash
 python3 -m venv venv
-source venv/bin/activate # macOS/Linux
-venv\Scripts\activate      # Windows
+```
+
+#### macOS / Linux
+```bash
+source venv/bin/activate
+```
+
+or
+
+#### Windows (Command Prompt)
+```bash
+venv\Scripts\activate 
 ```
 
 ### 3️⃣ Install Dependencies
@@ -77,11 +87,19 @@ pip install -r requirements.txt
 ```
 
 ### 4️⃣ Environment Setup
+
+#### macOS / Linux
 ```bash
-cp env-template .env # macOS / Linux
-# or
-copy env-template .env # Windows (Command Prompt)
+cp env-template .env
 ```
+
+or
+
+#### Windows (Command Prompt)
+```bash
+copy env-template .env
+```
+
 🔐 Tip: Never commit your .env file to Git.
 You can safely use the default values for local development.
 Optionally, replace SECRET_KEY or toggle DEBUG.
